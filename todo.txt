@@ -1,0 +1,20 @@
+=== general ===
+* create git repository for webpage generator
+* style builds page
+* create testing project repository on studio machine
+
+=== integration ===
+* figure out where in the directory structure these scripts/assets should be placed
+* create correct directory structure in autobuilder
+* change naming scheme in autobuilder
+* change autobuilder frequency to daily
+* trigger webpage generation after autobuilder has completed
+
+=== build descriptions ===
+* figure out how to capture commit messages
+* parse & filter commit messages
+* capture commit messages and show them in build descriptions
+
+=== long-term usage ===
+* create documentation on webpage generation
+* create easy setup for webpage generator (linking projects, commit messages, etc)

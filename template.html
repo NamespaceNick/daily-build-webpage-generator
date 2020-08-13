@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>WSS Daily Builds</title>
+		<link rel="stylesheet" href="builds.css">
+	</head>
+
+	<body>
+		<h1>WolverineSoft Studio Daily Builds</h1>
+		{% for build in builds %}
+			<button type="button" class="collapsible">{{ build.name }}</button>
+			<div class="content">
+				<div class="executable-group">
+					{% for os in platforms %}
+						<a href="{{ build[os] }}" download>
+							<button type="button" class="executable-download">{{ os }}</button>
+						</a>
+					{% endfor %}
+				</div>
+
+				<div class="build-description">
+					<p>NEW FEATURES</p>
+					<ul>
+						<li>New ranged enemy</li>
+						<li>Level 1 final boss</li>
+						<li>Player healing ability</li>
+					</ul>
+					<p>BUGFIXES</p>
+					<ul>
+						<li>Enemies no longer freeze</li>
+						<li>Fixed player being able to climb walls</li>
+						<li>Fixed player permanent invincibility on second life</li>
+						<li>Fixed enemies not being able to recognize player</li>
+					</ul>
+				</div>
+			</div>
+		{% endfor %}
+
+		<script type="text/javascript" src="builds.js"></script>
+	</body>
+</html>
