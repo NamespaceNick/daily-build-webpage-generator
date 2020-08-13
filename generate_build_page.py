@@ -6,6 +6,7 @@ import shutil
 import jinja2
 
 # NOTES
+#   * REQUIRES: daily-builds.html is at the top level of the site directory
 #   * This script should be called after all executables & directories for a
 #     new build have been made
 #   * BUILDS_DIR should point to the directory that contains each of the builds
@@ -13,16 +14,16 @@ import jinja2
 #     contain one zip file for each OS (Windows, Mac, Linux)
 
 # Directory containing website
-WEBSITE_DIR = "./website"
+WEBSITE_DIR = "/home/studio/studio-website"
 # Directory containing daily game builds (path based on website root)
-DAILY_BUILDS_DIR = "daily-builds"
+DAILY_BUILDS_DIR = "files/daily-builds"
 PLATFORMS = ["windows", "mac", "linux"]
 
 
 # Load the template
 templateLoader = jinja2.FileSystemLoader(searchpath="./")
 templateEnv = jinja2.Environment(loader=templateLoader)
-TEMPLATE_FILE = "template.html"
+TEMPLATE_FILE = "build_page_template.html"
 template = templateEnv.get_template(TEMPLATE_FILE)
 
 # Acquire the builds
@@ -32,7 +33,6 @@ for build_basename in os.listdir(os.path.join(WEBSITE_DIR, DAILY_BUILDS_DIR)):
     build_path = os.path.join(DAILY_BUILDS_DIR, build_basename)
     daily_build = {
         "name": build_basename,
-        "path": build_path,
         "windows": os.path.join(build_path, "windows_" + build_basename),
         "mac": os.path.join(build_path, "mac_" + build_basename),
         "linux": os.path.join(build_path, "linux_" + build_basename),
@@ -47,11 +47,11 @@ daily_build_list.sort(key=lambda i: i["name"], reverse=True)
 template_content = template.render(builds=daily_build_list, platforms=PLATFORMS)
 
 # Create & save new webpage file
-new_page = open("new_page.html", "w+")
+new_page = open("daily-builds.html", "w+")
 new_page.write(template_content)
 new_page.close()
 
 # TODO: Verify there weren't any errors?
 
 # Overwrite existing webpage with new one
-shutil.copyfile("new_page.html", "website/index.html")
+shutil.move("daily-builds.html", os.path.join(WEBSITE_DIR, "daily-builds.html"))
