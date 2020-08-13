@@ -18,3 +18,7 @@
 === long-term usage ===
 * create documentation on webpage generation
 * create easy setup for webpage generator (linking projects, commit messages, etc)
+* create python script to prune old daily builds
+
+=== error-checking ===
+* make sure pushes/pulls to website repo don't cause major issues

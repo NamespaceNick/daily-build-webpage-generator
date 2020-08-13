@@ -1,7 +1,7 @@
 import os
 
-WEBSITE_DIR = "./website"
-DAILY_BUILDS_DIR = "daily-builds"
+WEBSITE_DIR = "/home/studio/studio-website"
+DAILY_BUILDS_DIR = "files/daily-builds"
 
 
 # create os directories
