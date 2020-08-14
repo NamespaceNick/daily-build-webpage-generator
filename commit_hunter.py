@@ -1,17 +1,21 @@
 #!/usr/bin/env python3
+from datetime import date
 import os
-import re
 import pickle
+import re
 from sh.contrib import git
 
 # Script for acquiring & serving commit messages based on their type
 # (feature, bugfix, improvement, etc)
 
 # CONSTANTS
-REPO_DIR = "/home/studio/auto-build-devops-testing/test-unity-repo"
+WEBSITE_BUILDS_DIR = "/home/studio/studio-website/files/daily-builds"
+UNITY_REPO_DIR = "/home/studio/auto-build-devops-testing/test-unity-repo"
 LOGFILE = "log_commit_hunter.log"
 # TODO: Remove VALID_CATEGORIES and just use the values of OUTPUT_LISTS_AND_TAGS
 VALID_CATEGORIES = ["bugfix", "feature"]
+
+
 # IMPORTANT - This dictionary is where you identify how you want commits
 #               to be categorized and what their tag will be, respectively.
 #               Each key in the below dictionary will have its own key in the
@@ -78,7 +82,7 @@ def generate_commit(log_str):
 
 
 # Set directory of git repo
-git = git.bake(_cwd=REPO_DIR)
+git = git.bake(_cwd=UNITY_REPO_DIR)
 
 # Initialize empty dictionary & keys
 neat_commits = {key: [] for key in VALID_CATEGORIES + ["Misc"]}
@@ -90,7 +94,19 @@ for line in git.log("--pretty=oneline", "--abbrev-commit"):
     if new_commit is not None:
         neat_commits[new_commit.category].append(new_commit)
 
-# Write commit info to a file for build
-patch_notes = open("patch_notes", "wb")
+# Get current day to label patch notes
+month_day = date.today().strftime("%m_%d")
+month_day_year = date.today().strftime("%m_%d_%Y")
+
+# Create build directory
+# FIXME: Handle case where build directory / patch notes already exist (older)
+build_dir_abs_path = os.path.join(WEBSITE_BUILDS_DIR, f"build_{month_day}")
+os.makedirs(build_dir_abs_path)
+
+
+# Write patch notes to correct build directory
+patch_notes = open(
+    os.path.join(build_dir_abs_path, f"patch_notes_{month_day_year}"), "wb"
+)
 pickle.dump(neat_commits, patch_notes)
 patch_notes.close()
