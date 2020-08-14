@@ -9,32 +9,31 @@
 	<body>
 		<h1>WolverineSoft Studio Daily Builds</h1>
 		{% for build in builds %}
-			<button type="button" class="collapsible">{{ build.name }}</button>
-			<div class="content">
-				<div class="executable-group">
-					<span class="download-label">Downloads: </span>
-					{% for os in platforms %}
-							<a class="link-button" href="{{ build[os] }}" download>{{ os | capitalize}}</a>
-					{% endfor %}
-				</div>
-
-				<div class="build-description">
-					<h2>Patch Notes</h2>
-					<h3>New Features</h3>
-					<ul>
-						<li>New ranged enemy</li>
-						<li>Level 1 final boss</li>
-						<li>Player healing ability</li>
-					</ul>
-					<h3>Fixes and Updates</h3>
-					<ul>
-						<li>Enemies no longer freeze</li>
-						<li>Fixed player being able to climb walls</li>
-						<li>Fixed player permanent invincibility on second life</li>
-						<li>Fixed enemies not being able to recognize player</li>
-					</ul>
-				</div>
+		<button type="button" class="collapsible">{{ build.name }}</button>
+		<div class="content">
+			<div class="executable-group">
+				<span class="download-label">Downloads: </span>
+				{% for os in platforms %}
+				<a class="link-button" href="{{ build[os] }}" download>{{ os | capitalize}}</a>
+				{% endfor %}
 			</div>
+
+			<div class="build-description">
+				<h2>Patch Notes</h2>
+				<h3>New Features</h3>
+				<ul>
+					{% for feat in build.features %}
+						<li>{{ feat.message }}</li>
+					{% endfor %}
+				</ul>
+				<h3>Fixes and Updates</h3>
+				<ul>
+					{% for bugf in build.bugfixes %}
+						<li>{{ bugf.message }}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
 		{% endfor %}
 
 		<script type="text/javascript" src="scripts/daily-builds.js"></script>
