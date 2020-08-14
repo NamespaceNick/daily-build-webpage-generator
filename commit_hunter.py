@@ -95,18 +95,15 @@ for line in git.log("--pretty=oneline", "--abbrev-commit"):
         neat_commits[new_commit.category].append(new_commit)
 
 # Get current day to label patch notes
-month_day = date.today().strftime("%m_%d")
-month_day_year = date.today().strftime("%m_%d_%Y")
+date_tag = date.today().strftime("%m_%d_%y")
 
 # Create build directory
 # FIXME: Handle case where build directory / patch notes already exist (older)
-build_dir_abs_path = os.path.join(WEBSITE_BUILDS_DIR, f"build_{month_day}")
+build_dir_abs_path = os.path.join(WEBSITE_BUILDS_DIR, f"build_{date_tag}")
 os.makedirs(build_dir_abs_path)
 
 
 # Write patch notes to correct build directory
-patch_notes = open(
-    os.path.join(build_dir_abs_path, f"patch_notes_{month_day_year}"), "wb"
-)
+patch_notes = open(os.path.join(build_dir_abs_path, f"patch_notes_{date_tag}"), "wb")
 pickle.dump(neat_commits, patch_notes)
 patch_notes.close()
