@@ -12,6 +12,7 @@
 			<button type="button" class="collapsible">{{ build.name }}</button>
 			<div class="content">
 				<div class="executable-group">
+					<span class="download-label">Downloads: </span>
 					{% for os in platforms %}
 							<a class="link-button" href="{{ build[os] }}" download>{{ os | capitalize}}</a>
 					{% endfor %}
