@@ -67,7 +67,6 @@ for build_basename in os.listdir(os.path.join(WEBSITE_DIR, DAILY_BUILDS_DIR)):
         patch_notes = load_pickled_patch_notes(patch_notes_path)
 
         daily_build["features"] = patch_notes["feature"]
-        print(daily_build["features"][0])
         daily_build["bugfixes"] = patch_notes["bugfix"]
 
     daily_build_list.append(daily_build)
