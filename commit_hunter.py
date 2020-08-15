@@ -2,37 +2,33 @@
 from datetime import date
 import os
 import pickle
-import re
 from sh.contrib import git
 
 # Script for acquiring & serving commit messages based on their type
 # (feature, bugfix, improvement, etc)
 
-# CONSTANTS
-WEBSITE_BUILDS_DIR = "/home/studio/studio-website/files/daily-builds"
-UNITY_REPO_DIR = "/home/studio/auto-build-devops-testing/test-unity-repo"
-LOGFILE = "log_commit_hunter.log"
-# TODO: Remove VALID_CATEGORIES and just use the values of OUTPUT_LISTS_AND_TAGS
-VALID_CATEGORIES = ["bugfix", "feature"]
-
-
-# IMPORTANT - This dictionary is where you identify how you want commits
-#               to be categorized and what their tag will be, respectively.
-#               Each key in the below dictionary will have its own key in the
-#               output dictionary of this program
-#   NOTE: Any commits that cannot be matched to a tag will be tagged 'Misc' and
-#           the list containing those commits will be under the key 'Untagged'
-# TODO: Maybe remove this constant (after so much commenting, oof)
-OUTPUT_LISTS_AND_TAGS = {
-    "bugfixes": "bugfix",
-    "features": "feature",
-}
 
 ##############################################################################
 #################################### NOTES ###################################
 ##############################################################################
 #   * sh.contrib is used instead of sh because it avoids using a pager, which
 #       has can cause unintended behavior when parsing the output of a command
+
+
+##############################################################################
+###################### CONSTANTS & ENVIRONMENT VARIABLES #####################
+##############################################################################
+WEBSITE_BUILDS_DIR = "/home/studio/studio-website/files/daily-builds"
+UNITY_REPO_DIR = "/home/studio/auto-build-devops-testing/test-unity-repo"
+LOGFILE = "log_commit_hunter.log"
+
+VALID_CATEGORIES = ["bugfix", "feature"]
+DATE_FORMAT = "%m_%d_%y"
+
+
+##############################################################################
+################################## FUNCTIONS #################################
+##############################################################################
 
 
 # Create new logfile
@@ -48,7 +44,7 @@ class Commit:
         # self.author = author
 
 
-# Writes error to output as well as the logfile
+# Writes error message to output as well as the logfile
 def write_error(err_msg):
     print(fr"ERROR: {err_msg}")
     logfile = open(LOGFILE, "a")
@@ -56,13 +52,11 @@ def write_error(err_msg):
     logfile.close()
 
 
-# Generates a Commit object from a string acquired from the command:
+# Returns a Commit object from a string acquired from the command:
 #   `git log --pretty=oneline --abbrev-commit`
 # Returns None if string can't be parsed
-# TODO: ERROR CHECKING
 # TODO: Store commit author
 def generate_commit(log_str):
-    # print(f"Commit string: {log_str}")
     # Tokenize commit into object
     try:
         commit_hash, category, message = log_str.split(" ", 2)
@@ -81,6 +75,10 @@ def generate_commit(log_str):
     return Commit(category.strip("[]"), commit_hash, message)
 
 
+##############################################################################
+################################### SCRIPT ###################################
+##############################################################################
+
 # Set directory of git repo
 git = git.bake(_cwd=UNITY_REPO_DIR)
 
@@ -90,21 +88,22 @@ neat_commits = {key: [] for key in VALID_CATEGORIES + ["Misc"]}
 # Populate dictionary to handoff to page generator
 for line in git.log("--pretty=oneline", "--abbrev-commit"):
     line = line.rstrip("\n")  # remove trailing newline
-    new_commit = generate_commit(line)
+    new_commit = generate_commit(line)  # generate commit object
     if new_commit is not None:
         neat_commits[new_commit.category].append(new_commit)
 
-# Get current day to label patch notes
-date_tag = date.today().strftime("%m_%d_%y")
+# Get current date to label patch notes
+date_tag = date.today().strftime(DATE_FORMAT)
 
 # Create build directory
 # FIXME: Handle case where build directory / patch notes already exist (older)
+#   ^ Should result in joining old patch notes with new ones
 build_dir_abs_path = os.path.join(WEBSITE_BUILDS_DIR, f"build_{date_tag}")
 if not (os.path.exists(build_dir_abs_path) and os.path.isdir(build_dir_abs_path)):
     os.makedirs(build_dir_abs_path)
 
 
-# Write patch notes to correct build directory
+# Serialize patch within relevant build directory
 patch_notes = open(
     os.path.join(build_dir_abs_path, f"patch_notes_build_{date_tag}"), "wb"
 )
