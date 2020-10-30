@@ -1,4 +1,5 @@
-# Python script that automatically generates & replaces the builds webpage
+# Automatically generates & replaces the builds webpage based on builds found
+# in the build directory
 # Created by Nico Williams, 8/12/2020
 import os
 import pickle
@@ -14,6 +15,10 @@ import jinja2
 #   * Each build in BUILDS_DIR should have it's own directory, which should
 #     contain one zip file for each OS (Windows, Mac, Linux)
 
+# TODO: Probably best to just have a file be outputted from this script, then
+# allow another script to worry about replacing the html file in the website
+# repo
+
 # Directory containing website
 WEBSITE_DIR = "/home/studio/studio-website"
 # Directory containing daily game builds (path based on website root)
@@ -22,6 +27,7 @@ PLATFORMS = ["windows", "mac", "linux"]
 
 
 # Python class object to represent a git commit. Required for loading commits
+# from disk using Pickle
 class Commit:
     def __init__(self, category, hash_str, message):
         self.category = category
