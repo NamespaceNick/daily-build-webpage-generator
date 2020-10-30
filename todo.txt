@@ -2,6 +2,7 @@
 * create git repository for webpage generator
 * style builds page
 * create testing project repository on studio machine
+* create test website / project within repo for testing & development
 
 === integration ===
 * figure out where in the directory structure these scripts/assets should be placed
@@ -22,3 +23,25 @@
 
 === error-checking ===
 * make sure pushes/pulls to website repo don't cause major issues
+
+
+##############################################################################
+################################ COMMIT HUNTER ###############################
+##############################################################################
+==== High Priority ====
+* Change serialization format from pickle to JSON 
+* Support [ignore] keyword for commits that shouldn't show up in patch notes
+* Create Miscellaneous section of patch notes for unrecognized message formats
+* Store author of a commit
+* Support new audio & art commits
+* Preserve logfiles
+* Record ALL commits that weren't included in patch notes somewhere so we
+	can notice when there might be issues with the error catching/parsing
+* Actually write useful information about parsing process to the logfile
+
+
+==== Edge Cases & Testing ====
+* Handle merge commits
+* Filter out commits that have already been seen
+* If patch notes file already exist, append new patch notes to existing list
+		* probably just unpickle and then combine the dictionaries(?)
